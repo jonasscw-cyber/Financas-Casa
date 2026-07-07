@@ -709,18 +709,35 @@ function loadLocal(){
 // Lança as entradas fixas do mês atual, se ainda não foram lançadas
 function ensureRendaFixa(){
   const now=new Date();
+  const hojeMeioDia=new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59);
   const tag=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
-  const jaTem=state.entries.some(e=>e.type==='income'&&e.catKey==='rendafixa'&&e.fixTag===tag);
-  if(jaTem) return false;
   const lista=cfg.rendaFixa&&cfg.rendaFixa.length?cfg.rendaFixa:RENDA_FIXA_DEFAULT;
+  let mudou=false;
+
+  // 1) Limpa entradas fixas com data FUTURA (lançadas antes da hora por versões antigas)
+  const antes=state.entries.length;
+  state.entries=state.entries.filter(e=>{
+    if(e.type==='income'&&e.catKey==='rendafixa'){
+      return new Date(e.date)<=hojeMeioDia; // mantém só as que já chegaram
+    }
+    return true;
+  });
+  if(state.entries.length!==antes) mudou=true;
+
+  // 2) Lança cada entrada fixa do mês só se a data dela já chegou e ainda não existe
   lista.forEach(r=>{
     const dia=Math.min(Math.max(parseInt(r.dia)||1,1),28);
-    const data=new Date(now.getFullYear(),now.getMonth(),dia,12,0,0).toISOString();
-    state.entries.unshift({ id:'fix-'+tag+'-'+r.desc.replace(/\s+/g,''),
-      desc:r.desc, val:parseFloat(r.val)||0, type:'income', catKey:'rendafixa', place:'',
-      date:data, fixTag:tag, created:new Date().toISOString() });
+    const dataEntrada=new Date(now.getFullYear(),now.getMonth(),dia,12,0,0);
+    if(dataEntrada>hojeMeioDia) return; // ainda não chegou a data
+    const id='fix-'+tag+'-'+r.desc.replace(/\s+/g,'');
+    if(state.entries.some(e=>e.id===id)) return; // já lançada
+    state.entries.unshift({ id, desc:r.desc, val:parseFloat(r.val)||0,
+      type:'income', catKey:'rendafixa', place:'',
+      date:dataEntrada.toISOString(), fixTag:tag, created:new Date().toISOString() });
+    mudou=true;
   });
-  return true;
+
+  return mudou;
 }
 function saveLocal(){ localStorage.setItem(LS_ENTRIES,JSON.stringify(state.entries)); localStorage.setItem(LS_CFG,JSON.stringify(cfg)); }
 async function save(){ saveLocal(); if(cfg.bin&&cfg.key) syncToBin(); }
@@ -804,6 +821,13 @@ if(cfg.bin&&cfg.key){
   renderAll();
 }
 document.getElementById('cmd').focus();
+
+// Ao reabrir o app (voltar do fundo), relança entradas fixas cuja data chegou
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'){
+    if(ensureRendaFixa()){ save(); renderAll(); }
+  }
+});
 </script>
 </body>
 </html>
