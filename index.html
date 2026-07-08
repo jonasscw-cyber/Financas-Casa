@@ -194,16 +194,18 @@
   .rf-head{display:flex;gap:6px;font-size:11px;color:var(--txt3);margin-bottom:4px;padding:0 2px}
   .rf-head .h-desc{flex:1}.rf-head .h-val{width:90px}.rf-head .h-dia{width:56px;text-align:center}.rf-head .h-x{width:26px}
   .cat-edit{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px}
-  .cat-edit-top{display:flex;gap:6px;align-items:center;margin-bottom:6px}
-  .cat-edit input{background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:8px;font-size:13px;outline:none}
+  .cat-edit-top{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:nowrap}
+  .cat-edit input{background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:9px;font-size:14px;outline:none;-webkit-appearance:none;appearance:none}
   .cat-edit input:focus{border-color:var(--accent)}
-  .cat-ico-in{width:44px;text-align:center;font-size:16px}
-  .cat-name-in{flex:1;min-width:0}
-  .cat-color-in{width:40px;padding:2px;height:36px;cursor:pointer}
-  .cat-kw-in{width:100%}
-  .cat-edit .cat-del{background:none;border:none;color:var(--txt3);font-size:17px;cursor:pointer;padding:2px 4px}
+  .cat-ico-in{width:46px;flex:0 0 46px;text-align:center;font-size:18px}
+  .cat-name-in{flex:1 1 auto;min-width:50px;color:var(--txt);background:var(--bg)}
+  .cat-color-in{width:40px;flex:0 0 40px;padding:2px;height:38px;cursor:pointer;-webkit-appearance:none;appearance:none;border:1px solid var(--line);border-radius:8px;background:var(--bg);overflow:hidden}
+  .cat-color-in::-webkit-color-swatch-wrapper{padding:0}
+  .cat-color-in::-webkit-color-swatch{border:none;border-radius:5px}
+  .cat-kw-in{width:100%;color:var(--txt);background:var(--bg)}
+  .cat-edit .cat-del{background:none;border:none;color:var(--txt3);font-size:17px;cursor:pointer;padding:2px 4px;flex:0 0 auto}
   .cat-edit .cat-del:hover{color:var(--accent)}
-  .cat-sys-badge{font-size:10px;color:var(--txt3);background:var(--bg);padding:2px 7px;border-radius:8px;white-space:nowrap}
+  .cat-sys-badge{font-size:10px;color:var(--txt3);background:var(--bg);padding:2px 7px;border-radius:8px;white-space:nowrap;flex:0 0 auto}
 </style>
 </head>
 <body>
